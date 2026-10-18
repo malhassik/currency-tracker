@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 class Currency:
@@ -91,13 +92,60 @@ class CurrencyTracker:
                 if code in valute_dict:
                     v_info = valute_dict[code]
 
-                currency = Currency(
-                    code=code, name=v_info["Name"], value=v_info["Value"], date=date_str
-                )
-                self.history.append(currency)
-                print(f"Добавлено: {currency}")
+                    # 1. Проверяем, есть ли уже такая валюта на эту дату
+                    is_duplicate = False
+                    for item in self.history:
+                        if item.code == code and item.date == date_str:
+                            is_duplicate = True
+                            break
+
+                    if not is_duplicate:
+                        currency = Currency(
+                            code=code,
+                            name=v_info["Name"],
+                            value=v_info["Value"],
+                            date=date_str,
+                        )
+                        self.history.append(currency)
+                        print(f"Добавлено: {currency}")
+                    else:
+                        print(
+                            f"Курс {code} на {date_str} уже есть в истории, пропускаем."
+                        )
 
         except requests.exceptions.RequestException as e:
             print(f"Ошибка сети: {e}")
         except KeyError as e:
             print("Ошибка в структуре данных API:", e)
+
+    # Методы сохранения в файл JSON и загрузки из файла
+    def save_to_json(self, path):
+        data_to_save = []
+
+        for curr in self.history:
+            data_to_save.append(curr.to_dict())
+
+        with open(path, "w", encoding="utf-8") as file:
+            json.dump(data_to_save, file, ensure_ascii=False, indent=2)
+        print(f"История сохранена в {path}")
+
+    def load_from_json(self, path):
+        try:
+            with open(path, encoding="utf-8") as file:
+                data = json.load(file)
+
+            self.history = []
+
+            for item in data:
+                curr = Currency(
+                    code=item["code"],
+                    name=item["name"],
+                    value=item["value"],
+                    date=item["date"],
+                )
+                self.history.append(curr)
+
+            print(f"Загружено {len(self.history)} записей из {path}")
+
+        except FileNotFoundError:
+            print("Файл истории не найден. Начинаем с чистого листа.")
