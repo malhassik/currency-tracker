@@ -118,6 +118,20 @@ class CurrencyTracker:
         except KeyError as e:
             print("Ошибка в структуре данных API:", e)
 
+    def get_max_rate(self, code):
+        """Возвращает объект Currency с самым высоким курсом для указанной валюты."""
+        # 1. Отфильтровываем историю, оставляя только нужную валюту (например, USD)
+        filtered = [curr for curr in self.history if curr.code == code]
+
+        # 2. Если истории по этой валюте нет — возвращаем None
+        if not filtered:
+            return None
+
+        # 3. Ищем максимум по полю value
+        # Используем функцию max и лямбду, чтобы указать, что сравнивать нужно по value
+        best_rate = max(filtered, key=lambda curr: curr.value)
+        return best_rate
+
     # Методы сохранения в файл JSON и загрузки из файла
     def save_to_json(self, path):
         data_to_save = []
