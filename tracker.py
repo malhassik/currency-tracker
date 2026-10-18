@@ -34,7 +34,7 @@ class Currency:
 
     @value.setter
     def value(self, vals):
-        if vals > 0:
+        if vals < 0:
             print("Ошибка: значение должно быть больше 0")
         self._value = vals
 
@@ -50,11 +50,16 @@ class Currency:
 
     # Переопределение магических методов
     def __str__(self):
-        print(f"Доллар США (USD): {self.value} руб. на {self.date}")
+        return f"{self.name}({self.code}): {self.value} руб. на {self.date}"
 
     def __repr__(self):
-        pass
+        return f"Currency(code={self.code}, value={self.value})"
 
     # Методы
     def to_dict(self):
-        pass
+        return {
+            "code": self.code,
+            "name": self.name,
+            "value": self.value,
+            "date": self.date,
+        }
