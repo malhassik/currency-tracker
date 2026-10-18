@@ -1,3 +1,6 @@
+import requests
+
+
 class Currency:
 
     # Конструктор класса
@@ -63,3 +66,38 @@ class Currency:
             "value": self.value,
             "date": self.date,
         }
+
+
+class CurrencyTracker:
+
+    def __init__(self):
+        self.history = []  # Список, где будут храниться объекты Currency
+
+    def fetch_rates(self):
+        """Делает запрос к API ЦБ и сохраняет курсы валют в историю."""
+        print("Запрашиваем данные у ЦБ")
+        url = "https://www.cbr-xml-daily.ru/daily_json.js"
+
+        try:
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            data = response.json()
+
+            date_str = data["Date"][:10]  # Берем только YYYY-MM-DD
+
+            valute_dict = data["Valute"]
+
+            for code in ["USD", "EUR"]:
+                if code in valute_dict:
+                    v_info = valute_dict[code]
+
+                currency = Currency(
+                    code=code, name=v_info["Name"], value=v_info["Value"], date=date_str
+                )
+                self.history.append(currency)
+                print(f"Добавлено: {currency}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка сети: {e}")
+        except KeyError as e:
+            print("Ошибка в структуре данных API:", e)
