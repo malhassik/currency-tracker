@@ -15,7 +15,7 @@ class Currency:
     @code.setter
     def code(self, value):
         if not value:
-            print("Ошибка: поле не может быть пустым")
+            raise ValueError("Ошибка: поле не может быть пустым")
         self._code = value
 
     @property
@@ -25,7 +25,7 @@ class Currency:
     @name.setter
     def name(self, value):
         if not value:
-            print("Ошибка: поле не может быть пустым")
+            raise ValueError("Ошибка: поле не может быть пустым")
         self._name = value
 
     @property
@@ -35,7 +35,7 @@ class Currency:
     @value.setter
     def value(self, vals):
         if vals < 0:
-            print("Ошибка: значение должно быть больше 0")
+            raise ValueError("Ошибка: значение должно быть больше 0")
         self._value = vals
 
     @property
@@ -45,7 +45,7 @@ class Currency:
     @date.setter
     def date(self, value):
         if not value:
-            print("Ошибка: поле не может быть пустым")
+            raise ValueError("Ошибка: поле не может быть пустым")
         self._date = value
 
     # Переопределение магических методов
