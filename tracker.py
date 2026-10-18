@@ -8,7 +8,6 @@ class Currency:
         self.date = date
 
     # properties и setters
-
     @property
     def code(self):
         return self._code
@@ -35,8 +34,8 @@ class Currency:
 
     @value.setter
     def value(self, vals):
-        if vals >= 0:
-            print("Ошибка: значение не может быть отрицательным")
+        if vals > 0:
+            print("Ошибка: значение должно быть больше 0")
         self._value = vals
 
     @property
@@ -48,3 +47,14 @@ class Currency:
         if not value:
             print("Ошибка: поле не может быть пустым")
         self._date = value
+
+    # Переопределение магических методов
+    def __str__(self):
+        print(f"Доллар США (USD): {self.value} руб. на {self.date}")
+
+    def __repr__(self):
+        pass
+
+    # Методы
+    def to_dict(self):
+        pass
